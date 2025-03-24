@@ -1,0 +1,5 @@
+00001 John Doe             A 02510.89 0001 NP
+00002 Jane Doe             A 01762.95 0002 SP
+00003 Jenny Doe            A 00012.03 0021 SP
+00004 Jimmy Doe            D 00052.03 5513 SP
+00005 John Doe             A 00114.50 0001 NP
