@@ -17,7 +17,7 @@ class FileIO:
                 clean_line = line.rstrip('\n')
 
                 # Validate line length
-                if len(clean_line) != 42:
+                if len(clean_line) != 45:
                     print(f"ERROR: Fatal error - Line {line_num}: Invalid length ({len(clean_line)} chars)")
                     continue
 
@@ -28,6 +28,7 @@ class FileIO:
                     status = clean_line[27]
                     balance_str = clean_line[29:37]  # 8 characters
                     transactions_str = clean_line[38:42]  # 4 characters
+                    plan = clean_line[43:45] # 2 characters
 
                     # Validate account number format (5 digits)
                     if not account_number.isdigit():
@@ -52,6 +53,11 @@ class FileIO:
                         print(f"ERROR: Fatal error - Line {line_num}: Invalid transaction count format")
                         continue
 
+                    # Validate plan
+                    if plan not in ("NP", "SP"):
+                        print(f"ERROR: Fatal error - Line {line_num}: Invalid plan '{status}'")
+                        continue
+
                     # Convert numerical values
                     balance = float(balance_str)
                     transactions = int(transactions_str)
@@ -69,7 +75,8 @@ class FileIO:
                         'name': name.strip(),
                         'status': status,
                         'balance': balance,
-                        'total_transactions': transactions
+                        'total_transactions': transactions,
+                        'plan': plan
                     })
 
                 except Exception as e:
@@ -179,15 +186,19 @@ class FileIO:
                 if acc['balance'] > 99999.99 or acc['balance'] < 0:
                     raise ValueError(f"Balance out of range: {acc['balance']}")
 
+                # Validate status
+                if acc['plan'] not in ("NP", "SP"):
+                    raise ValueError(f"Invalid plan: {acc['plan']}")
+
                 # Format fields
                 acc_num = acc['account_number'].zfill(5)
                 name = acc['name'].ljust(20)[:20]
                 balance = f"{acc['balance']:08.2f}"
 
-                file.write(f"{acc_num} {name} {acc['status']} {balance}\n")
+                file.write(f"{acc_num} {name} {acc['status']} {balance} {acc['plan']}\n")
 
             # Add END_OF_FILE marker
-            file.write("00000 END_OF_FILE          A 00000.00\n")
+            file.write("00000 END_OF_FILE          A 00000.00 NP\n")
 
 
 
@@ -226,10 +237,14 @@ class FileIO:
                 if acc['total_transactions'] > 9999 or acc['total_transactions'] < 0:
                     raise ValueError(f"Transaction count out of range: {acc['total_transactions']}")
 
+                # Validate status
+                if acc['plan'] not in ("NP", "SP"):
+                    raise ValueError(f"Invalid plan: {acc['plan']}")
+
                 # Format fields
                 acc_num = acc['account_number'].zfill(5)
                 name = acc['name'].ljust(20)[:20]
                 balance = f"{acc['balance']:08.2f}"
                 tot_tr = acc['total_transactions'].zfill(4)
 
-                file.write(f"{acc_num} {name} {acc['status']} {balance} {tot_tr}\n")
+                file.write(f"{acc_num} {name} {acc['status']} {balance} {tot_tr} {acc['plan']}\n")

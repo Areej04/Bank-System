@@ -55,4 +55,6 @@ class TransactionHandler:
         # TODO: Iterate through transactions
         # TODO: Search for corresponding account (Hint: Use Toolbox.search_account())
         # TODO: Apply transaction to account (Hint: Use Toolbox.decode_tc())
+        # TODO: Debit account based on payment plan
+
         pass
