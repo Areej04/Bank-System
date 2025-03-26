@@ -38,7 +38,7 @@ class Toolbox:
             case 8:
                 return TransactionHandler.changeplan
             case _:
-                return lambda x, y: None # TODO: Needs to be tested
+                return lambda x, y: None
 
 
     @staticmethod

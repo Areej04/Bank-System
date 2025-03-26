@@ -4,10 +4,10 @@ class TransactionHandler:
     """
     Handles the application of transactions to account data
     """
-    # TODO: Ensure all transactions implement Toolbox.log_constraint_error()
 
     @staticmethod
-    def withdraw(account, transaction):
+    def withdraw(accounts, transaction):
+        account = Toolbox.search_account(accounts, transaction)
         if account['status'] == 'D':
             Toolbox.log_constraint_error("Account Disabled", f"Cannot withdraw from disabled account {account['account_number']}")
             return
@@ -20,7 +20,8 @@ class TransactionHandler:
         account['total_transactions'] += 1
 
     @staticmethod
-    def transfer(account, transaction):
+    def transfer(accounts, transaction):
+        account = Toolbox.search_account(accounts, transaction)
         if not account:
             Toolbox.log_constraint_error("Account Not Found", f"Account {transaction['account_number']} does not exist")
             return
@@ -51,7 +52,8 @@ class TransactionHandler:
             account['total_transactions'] += 1
 
     @staticmethod
-    def paybill(account, transaction):
+    def paybill(accounts, transaction):
+        account = Toolbox.search_account(accounts, transaction)
         if account['status'] == 'D':
             Toolbox.log_constraint_error("Account Disabled", f"Cannot pay bills from disabled account {account['account_number']}")
             return
@@ -64,7 +66,8 @@ class TransactionHandler:
         account['total_transactions'] += 1
 
     @staticmethod
-    def deposit(account, transaction):
+    def deposit(accounts, transaction):
+        account = Toolbox.search_account(accounts, transaction)
         if account['status'] == 'D':
             Toolbox.log_constraint_error("Account Disabled", f"Cannot deposit into disabled account {account['account_number']}")
             return
@@ -77,7 +80,8 @@ class TransactionHandler:
         account['total_transactions'] += 1
 
     @staticmethod
-    def create(account, transaction):
+    def create(accounts, transaction):
+        account = Toolbox.search_account(accounts, transaction)
         if account:
             Toolbox.log_constraint_error("Account Exists", f"Cannot create duplicate account {transaction['account_number']}")
             return
@@ -98,7 +102,8 @@ class TransactionHandler:
         accounts.append(new_account)
 
     @staticmethod
-    def delete(account, transaction):
+    def delete(accounts, transaction):
+        account = Toolbox.search_account(accounts, transaction)
         if not account:
             Toolbox.log_constraint_error("Account Not Found", f"Cannot delete non-existent account {transaction['account_number']}")
             return
@@ -110,7 +115,8 @@ class TransactionHandler:
         accounts.remove(account)
 
     @staticmethod
-    def disable(account, transaction):
+    def disable(accounts, transaction):
+        account = Toolbox.search_account(accounts, transaction)
         if transaction['misc'].strip() not in ('A', 'D'):
             Toolbox.log_constraint_error("Invalid Code", f"{transaction['misc']} is not a valid status")
             return
@@ -122,7 +128,8 @@ class TransactionHandler:
         account['status'] = transaction['misc'].strip()
 
     @staticmethod
-    def changeplan(account, transaction):
+    def changeplan(accounts, transaction):
+        account = Toolbox.search_account(accounts, transaction)
         if transaction['misc'] not in ("NP", "SP"):
             Toolbox.log_constraint_error("Invalid Code", f"{transaction['misc']} is not a valid plan")
             return
@@ -143,11 +150,10 @@ class TransactionHandler:
         Applies list of transactions to given account list
         """
         for transaction in transactions:
-            account = Toolbox.search_account(accounts, transaction)
             transaction_function = Toolbox.decode_tc(transaction['transaction_code'])
 
+            # Do nothing if transaction is end of session
             if not transaction_function:
-                Toolbox.log_constraint_error("Invalid Transaction Code", f"Transaction code {transaction['transaction_code']} is not recognized")
                 continue
 
-            transaction_function(account, transaction)
+            transaction_function(accounts, transaction)
