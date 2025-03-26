@@ -7,7 +7,14 @@ class TransactionHandler:
 
     @staticmethod
     def withdraw(accounts, transaction):
+        """
+        Applies withdraw transaction to related account
+        """
         account = Toolbox.search_account(accounts, transaction)
+        if not account:
+            Toolbox.log_constraint_error("Account Not Found", f"Account {transaction['account_number']} does not exist")
+            return
+
         if account['status'] == 'D':
             Toolbox.log_constraint_error("Account Disabled", f"Cannot withdraw from disabled account {account['account_number']}")
             return
@@ -21,6 +28,9 @@ class TransactionHandler:
 
     @staticmethod
     def transfer(accounts, transaction):
+        """
+        Applies transfer transaction to one related account
+        """
         account = Toolbox.search_account(accounts, transaction)
         if not account:
             Toolbox.log_constraint_error("Account Not Found", f"Account {transaction['account_number']} does not exist")
@@ -53,7 +63,14 @@ class TransactionHandler:
 
     @staticmethod
     def paybill(accounts, transaction):
+        """
+        Applies paybill transaction to related account
+        """
         account = Toolbox.search_account(accounts, transaction)
+        if not account:
+            Toolbox.log_constraint_error("Account Not Found", f"Account {transaction['account_number']} does not exist")
+            return
+
         if account['status'] == 'D':
             Toolbox.log_constraint_error("Account Disabled", f"Cannot pay bills from disabled account {account['account_number']}")
             return
@@ -67,7 +84,14 @@ class TransactionHandler:
 
     @staticmethod
     def deposit(accounts, transaction):
+        """
+        Applies deposit transaction to related account
+        """
         account = Toolbox.search_account(accounts, transaction)
+        if not account:
+            Toolbox.log_constraint_error("Account Not Found", f"Account {transaction['account_number']} does not exist")
+            return
+
         if account['status'] == 'D':
             Toolbox.log_constraint_error("Account Disabled", f"Cannot deposit into disabled account {account['account_number']}")
             return
@@ -81,9 +105,12 @@ class TransactionHandler:
 
     @staticmethod
     def create(accounts, transaction):
+        """
+        Applies create transaction to related account
+        """
         account = Toolbox.search_account(accounts, transaction)
         if account:
-            Toolbox.log_constraint_error("Account Exists", f"Cannot create duplicate account {transaction['account_number']}")
+            Toolbox.log_constraint_error("Account Not Found", f"Account {transaction['account_number']} does not exist")
             return
 
         if transaction['misc'] not in ("NP", "SP"):
@@ -103,9 +130,12 @@ class TransactionHandler:
 
     @staticmethod
     def delete(accounts, transaction):
+        """
+        Applies delete transaction to related account
+        """
         account = Toolbox.search_account(accounts, transaction)
         if not account:
-            Toolbox.log_constraint_error("Account Not Found", f"Cannot delete non-existent account {transaction['account_number']}")
+            Toolbox.log_constraint_error("Account Not Found", f"Account {transaction['account_number']} does not exist")
             return
 
         if account['balance'] != 0:
@@ -116,7 +146,14 @@ class TransactionHandler:
 
     @staticmethod
     def disable(accounts, transaction):
+        """
+        Applies disable transaction to related account
+        """
         account = Toolbox.search_account(accounts, transaction)
+        if not account:
+            Toolbox.log_constraint_error("Account Not Found", f"Account {transaction['account_number']} does not exist")
+            return
+
         if transaction['misc'].strip() not in ('A', 'D'):
             Toolbox.log_constraint_error("Invalid Code", f"{transaction['misc']} is not a valid status")
             return
@@ -129,7 +166,14 @@ class TransactionHandler:
 
     @staticmethod
     def changeplan(accounts, transaction):
+        """
+        Applies changeplan transaction to related account
+        """
         account = Toolbox.search_account(accounts, transaction)
+        if not account:
+            Toolbox.log_constraint_error("Account Not Found", f"Cannot change plan of non-existent account {transaction['account_number']}")
+            return
+
         if transaction['misc'] not in ("NP", "SP"):
             Toolbox.log_constraint_error("Invalid Code", f"{transaction['misc']} is not a valid plan")
             return
