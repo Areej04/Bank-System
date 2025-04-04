@@ -100,7 +100,7 @@ class FileIO:
                 clean_line = line.rstrip('\n')
 
                 # Validate line length
-                if len(clean_line) != 40:
+                if len(clean_line) != 41:
                     print(f"ERROR: Fatal error - Line {line_num}: Invalid length ({len(clean_line)} chars)")
                     continue
 
@@ -110,7 +110,7 @@ class FileIO:
                     name = clean_line[3:23]  # 20 characters
                     account_number = clean_line[24:29]
                     amount_str = clean_line[30:38]  # 8 characters
-                    misc = clean_line[39:41]  # 2 characters
+                    misc = clean_line[39:42]  # 2 characters
 
                     # Validate transaction code
                     if not tr_code_str.isdigit():
@@ -209,7 +209,7 @@ class FileIO:
         Raises ValueError for invalid data to enable testing.
         """
         with open(file_path, 'w') as file:
-            accounts.sort(key=lambda x,y: x['account_number'] < y['account_number'])
+            accounts.sort(key=(lambda x: x['account_number']))
             for acc in accounts:
                 # Validate account number
                 if not isinstance(acc['account_number'], str) or not acc['account_number'].isdigit():
@@ -245,6 +245,6 @@ class FileIO:
                 acc_num = acc['account_number'].zfill(5)
                 name = acc['name'].ljust(20)[:20]
                 balance = f"{acc['balance']:08.2f}"
-                tot_tr = acc['total_transactions'].zfill(4)
+                tot_tr = str(acc['total_transactions']).zfill(4)
 
                 file.write(f"{acc_num} {name} {acc['status']} {balance} {tot_tr} {acc['plan']}\n")
