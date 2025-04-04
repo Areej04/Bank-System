@@ -1,5 +1,3 @@
-from TransactionHandler import TransactionHandler
-
 class Toolbox:
     """
     A toolbox class with useful miscellaneous functions
@@ -20,6 +18,7 @@ class Toolbox:
         Decodes transaction code into corresponding transaction
         Returns related transaction function
         """
+        from TransactionHandler import TransactionHandler
         match transaction_code:
             case 1:
                 return TransactionHandler.withdraw
