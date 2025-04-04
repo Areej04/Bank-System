@@ -20,7 +20,7 @@ class TransactionHandler:
             return
 
         if transaction['amount'] > account['balance']:
-            Toolbox.log_constraint_error("Insufficient Funds", f"Cannot withdraw {transaction['amount']} from account {account['account_number']}")
+            Toolbox.log_constraint_error("Insufficient Funds", f"Cannot withdraw {transaction['amount']:.2f} from account {account['account_number']}")
             return
 
         account['balance'] -= transaction['amount']
@@ -48,14 +48,14 @@ class TransactionHandler:
 
         if sending:
             if transaction['amount'] > account['balance']:
-                Toolbox.log_constraint_error("Insufficient Funds", f"Cannot transfer {transaction['amount']} from account {account['account_number']}")
+                Toolbox.log_constraint_error("Insufficient Funds", f"Cannot transfer {transaction['amount']:.2f} from account {account['account_number']}")
                 return
 
             account['balance'] -= transaction['amount']
             account['total_transactions'] += 1
         else:
             if (account['balance'] + transaction['amount']) > 99999.99:
-                Toolbox.log_constraint_error("Balance Limit Exceeded",f"Cannot deposit {transaction['amount']} into account {account['account_number']}")
+                Toolbox.log_constraint_error("Balance Limit Exceeded",f"Cannot deposit {transaction['amount']:.2f} into account {account['account_number']}")
                 return
 
             account['balance'] += transaction['amount']
@@ -76,7 +76,7 @@ class TransactionHandler:
             return
 
         if transaction['amount'] > account['balance']:
-            Toolbox.log_constraint_error("Insufficient Funds", f"Cannot pay bill of {transaction['amount']} from account {account['account_number']}")
+            Toolbox.log_constraint_error("Insufficient Funds", f"Cannot pay bill of {transaction['amount']:.2f} from account {account['account_number']}")
             return
 
         account['balance'] -= transaction['amount']
@@ -97,7 +97,7 @@ class TransactionHandler:
             return
 
         if (account['balance'] + transaction['amount']) > 99999.99:
-            Toolbox.log_constraint_error("Balance Limit Exceeded", f"Cannot deposit {transaction['amount']} into account {account['account_number']}")
+            Toolbox.log_constraint_error("Balance Limit Exceeded", f"Cannot deposit {transaction['amount']:.2f} into account {account['account_number']}")
             return
 
         account['balance'] += transaction['amount']
